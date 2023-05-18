@@ -16,6 +16,7 @@ export default {
         darkBackColor: "#171823",
         darkPlaceColor: "#767992",
         darkBordColor: "#393A4B",
+        shadowColor: "#C2C3D6",
       },
     },
   },
