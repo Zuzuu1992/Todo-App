@@ -19,9 +19,21 @@ function App() {
   };
 
   const addTodo = (todo) => {
-    const newTodo = { id: uuidv4(), task: todo, completed: false };
+    const newTodo = { id: uuidv4(), task: todo, complete: false };
     setToDos([...todos, newTodo]);
     console.log([...todos, newTodo]);
+  };
+
+  const toggleTodo = (id) => {
+    const newTodoes = [...todos];
+    const todo = newTodoes.find((todo) => todo.id === id);
+    todo.complete = !todo.complete;
+    setToDos(newTodoes);
+  };
+
+  const deleteTodo = (id) => {
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    setToDos(updatedTodos);
   };
 
   // useEffect(() => {
@@ -81,7 +93,12 @@ function App() {
           }}
         >
           {todos.map((todo, index) => (
-            <Todo task={todo} key={index} />
+            <Todo
+              task={todo}
+              toggleTodo={toggleTodo}
+              deleteTodo={deleteTodo}
+              key={index}
+            />
           ))}
 
           <hr />
