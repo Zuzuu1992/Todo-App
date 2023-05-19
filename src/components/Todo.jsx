@@ -38,13 +38,19 @@ export default function Todo({ task, toggleTodo, deleteTodo }) {
               />
             )}
           </label>
-          <p className={`text-md ${task.complete ? "line-through" : ""}`}>
+          <p
+            className={`text-md ${task.complete ? "line-through" : ""} ${
+              task.complete ? "text-lightPlaceColor" : "text-lightTextColor"
+            }`}
+          >
             {task.task}
           </p>
         </div>
         <img
           src={Cross}
-          className="w-4 h-4"
+          className={`w-4 h-4 cursor-pointer ${
+            task.complete ? "invisible" : ""
+          }`}
           alt="Cross Icon"
           onClick={handleCrossClick}
         />
