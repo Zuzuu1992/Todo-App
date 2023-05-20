@@ -10,6 +10,14 @@ function App() {
   const [todos, setToDos] = useState([]);
   const [filter, setFilter] = useState("All");
   const [theme, setTheme] = useState();
+  const completedTodos = todos.filter((todo) => todo.complete);
+  const activeTodos = todos.filter((todo) => !todo.complete);
+  const filterArr =
+    filter === "All"
+      ? todos
+      : filter === "Active"
+      ? activeTodos
+      : completedTodos;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -92,7 +100,7 @@ function App() {
             boxShadow: "0px 35px 50px -15px rgba(194, 195, 214, 0.5) ",
           }}
         >
-          {todos.map((todo, index) => (
+          {filterArr.map((todo, index) => (
             <Todo
               task={todo}
               toggleTodo={toggleTodo}
@@ -103,10 +111,10 @@ function App() {
 
           <hr />
           <div className=" flex items-center justify-between bg-white gap-x-3  pt-4 pb-4 pl-5  pr-5 dark:bg-darkBackColor ">
-            <p className=" text-lightPlaceColor text-md dark:text-darkPlaceColor ">
-              items left
+            <p className=" text-lightPlaceColor text-md dark:text-darkPlaceColor cursor-pointer ">
+              0 items left
             </p>
-            <p className=" text-lightPlaceColor text-md dark:text-darkPlaceColor ">
+            <p className=" text-lightPlaceColor text-md dark:text-darkPlaceColor cursor-pointer ">
               Clear Completed
             </p>
           </div>
@@ -115,9 +123,30 @@ function App() {
           className=" flex items-center justify-center  bg-white rounded-md pt-4 pb-4 gap-x-5 text-base "
           style={{ boxShadow: "0px 35px 50px -15px rgba(194, 195, 214, 0.5) " }}
         >
-          <p className=" text-allColor font-bold">All</p>
-          <p className=" text-lightPlaceColor font-bold">Active</p>
-          <p className=" text-lightPlaceColor font-bold">Completed</p>
+          <p
+            onClick={() => setFilter("All")}
+            className={` font-bold cursor-pointer ${
+              filter === "All" ? "text-allColor" : "text-lightPlaceColor"
+            }`}
+          >
+            All
+          </p>
+          <p
+            onClick={() => setFilter("Active")}
+            className={` font-bold cursor-pointer ${
+              filter === "Active" ? "text-allColor" : "text-lightPlaceColor"
+            }`}
+          >
+            Active
+          </p>
+          <p
+            onClick={() => setFilter("Completed")}
+            className={` font-bold cursor-pointer ${
+              filter === "Completed" ? "text-allColor" : "text-lightPlaceColor"
+            }`}
+          >
+            Completed
+          </p>
         </div>
         <div className=" flex align-center justify-center">
           <p className=" mt-10 text-lightPlaceColor ">
