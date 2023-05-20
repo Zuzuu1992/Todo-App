@@ -44,6 +44,11 @@ function App() {
     setToDos(updatedTodos);
   };
 
+  const clearCompletedTodos = () => {
+    const updatedTodos = todos.filter((todo) => !todo.complete);
+    setToDos(updatedTodos);
+  };
+
   // useEffect(() => {
   //   console.log(todos);
   // }, [todos]);
@@ -111,10 +116,23 @@ function App() {
 
           <hr />
           <div className=" flex items-center justify-between bg-white gap-x-3  pt-4 pb-4 pl-5  pr-5 dark:bg-darkBackColor ">
-            <p className=" text-lightPlaceColor text-md dark:text-darkPlaceColor cursor-pointer ">
-              0 items left
+            <p className="text-lightPlaceColor text-md dark:text-darkPlaceColor cursor-pointer">
+              {filter === "All"
+                ? `${activeTodos.length} ${
+                    activeTodos.length === 1 ? "item" : "items"
+                  } left`
+                : filter === "Active"
+                ? `${activeTodos.length} ${
+                    activeTodos.length === 1 ? "item" : "items"
+                  } left`
+                : `${completedTodos.length} ${
+                    completedTodos.length === 1 ? "item" : "items"
+                  } completed`}
             </p>
-            <p className=" text-lightPlaceColor text-md dark:text-darkPlaceColor cursor-pointer ">
+            <p
+              className=" text-lightPlaceColor text-md dark:text-darkPlaceColor cursor-pointer "
+              onClick={clearCompletedTodos}
+            >
               Clear Completed
             </p>
           </div>
