@@ -3,6 +3,7 @@ import Moon from "./assets/images/icon-moon.svg";
 import Sun from "./assets/images/icon-sun.svg";
 import TodoIcon from "./assets/images/TODO.svg";
 import Todo from "/src/components/Todo.jsx";
+import { DesktopDiv } from "./components/DesktopDiv";
 import { v4 as uuidv4 } from "uuid";
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
   const [theme, setTheme] = useState();
   const completedTodos = todos.filter((todo) => todo.complete);
   const activeTodos = todos.filter((todo) => !todo.complete);
+  const [dark, setDark] = useState(false);
   const filterArr =
     filter === "All"
       ? todos
@@ -21,6 +23,9 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (inputValue.trim() === "") {
+      return;
+    }
 
     addTodo(inputValue);
     setInputValue("");
@@ -49,49 +54,54 @@ function App() {
     setToDos(updatedTodos);
   };
 
-  // useEffect(() => {
-  //   console.log(todos);
-  // }, [todos]);
-
-  // const addTodo = (todo) => {
-  //   setToDos([...todos, { id: uuidv4(), task: todo, completed: false }]);
-  //   console.log(todos);
-  // };
-
-  useEffect(() => {
-    if (theme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [theme]);
-
-  const handleThemeSwitch = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
-
   return (
-    <>
-      <div className=" flex flex-col mx-6 gap-y-2 xl:w-140  ">
+    <div
+      className={` place-content-center min-h-screen bg-no-repeat bg-contain ${
+        dark
+          ? 'bg-[url("./assets/images/bg-mobile-light.jpg")] desktop:bg-[url("./assets/images/bg-desktop-light.jpg")] bg-white'
+          : 'bg-[url("./assets/images/bg-mobile-dark.jpg")] desktop:bg-[url("./assets/images/bg-desktop-dark.jpg")] bg-darkBackColor'
+      }`}
+    >
+      <div className="  flex flex-col mx-6 gap-y-3 desktop:w-[540px] desktop:m-auto desktop:pt-[70px] ">
         <div className=" flex items-center pt-12 pb-10 justify-between  ">
-          <img src={TodoIcon} alt="Logo" />
           <img
-            src={theme === "dark" ? Sun : Moon}
-            alt="Moon-icon"
-            onClick={handleThemeSwitch}
+            src={TodoIcon}
+            alt="Logo"
+            className="desktop:h-[40px] desktop:w-[167px]"
+          />
+          <img
+            src={`${dark ? Moon : Sun}`}
+            onClick={() => setDark(!dark)}
+            className=" cursor-pointer"
           />
         </div>
+
         <form
-          className=" flex items-center bg-white gap-x-3 rounded-md pt-4 pb-4 pl-5 "
-          style={{ boxShadow: "0px 35px 50px -15px rgba(194, 195, 214, 0.5) " }}
+          className={`${
+            dark ? "bg-white" : "bg-darkBoxColor"
+          } flex items-center gap-x-3 rounded-md pt-4 pb-4 pl-5 desktop:pt-5 desktop:pb-5 `}
+          style={{
+            boxShadow: !dark
+              ? "0px 35px 50px -15px rgba(0, 0, 0, 0.5)"
+              : "0px 35px 50px -15px rgba(194, 195, 214, 0.5)",
+          }}
           onSubmit={handleSubmit}
         >
           <input
             type="checkbox"
-            className=" appearance-none w-5 h-5 rounded-full border border-solid lightBordColor dark:border-darkBordColor "
+            className={`${
+              dark
+                ? " border border-solid border-lightBordColor"
+                : " border border-solid border-lightTypeColor"
+            } appearance-none w-5 h-5 rounded-full cursor-pointer hover:border-allColor`}
           />
+
           <input
-            className="outline-none text-md w-full pr-5 tracking-tighter leading-3 placeholder-lightPlaceColor text-lightTypeColor dark:bg-darkBackColor dark:text-darkPlaceColor "
+            className={`${
+              dark
+                ? "bg-white placeholder-lightPlaceColor text-lightTypeColor "
+                : "bg-darkBoxColor placeholder-[#767992] text-[#C8CBE7]"
+            } outline-none text-md w-full pr-5 tracking-tighter leading-3 caret-allColor desktop:text-lg `}
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
@@ -100,9 +110,11 @@ function App() {
         </form>
 
         <div
-          className=" flex flex-col rounded-md overflow-hidden "
+          className=" flex flex-col rounded-md overflow-hidden text-black "
           style={{
-            boxShadow: "0px 35px 50px -15px rgba(194, 195, 214, 0.5) ",
+            boxShadow: !dark
+              ? "0px 35px 50px -15px rgba(0, 0, 0, 0.5)"
+              : "0px 35px 50px -15px rgba(194, 195, 214, 0.5)",
           }}
         >
           {filterArr.map((todo, index) => (
@@ -111,12 +123,21 @@ function App() {
               toggleTodo={toggleTodo}
               deleteTodo={deleteTodo}
               key={index}
+              dark={dark}
             />
           ))}
 
-          <hr />
-          <div className=" flex items-center justify-between bg-white gap-x-3  pt-4 pb-4 pl-5  pr-5 dark:bg-darkBackColor ">
-            <p className="text-lightPlaceColor text-md dark:text-darkPlaceColor cursor-pointer">
+          {/* <hr /> */}
+          <div
+            className={` ${
+              dark ? "bg-white" : "bg-darkBoxColor"
+            } flex items-center justify-between gap-x-3  pt-4 pb-4 pl-5  pr-5 desktop:hidden `}
+          >
+            <p
+              className={`${
+                dark ? "text-[#9495A5]" : "text-[#5B5E7E]"
+              } text-md cursor-pointer`}
+            >
               {filter === "All"
                 ? `${activeTodos.length} ${
                     activeTodos.length === 1 ? "item" : "items"
@@ -130,7 +151,9 @@ function App() {
                   } completed`}
             </p>
             <p
-              className=" text-lightPlaceColor text-md dark:text-darkPlaceColor cursor-pointer "
+              className={` ${
+                dark ? "text-[#9495A5]" : "text-[#5B5E7E]"
+              } text-md cursor-pointer `}
               onClick={clearCompletedTodos}
             >
               Clear Completed
@@ -138,41 +161,77 @@ function App() {
           </div>
         </div>
         <div
-          className=" flex items-center justify-center  bg-white rounded-md pt-4 pb-4 gap-x-5 text-base "
-          style={{ boxShadow: "0px 35px 50px -15px rgba(194, 195, 214, 0.5) " }}
+          className={` ${
+            dark ? "bg-white" : "bg-darkBoxColor"
+          } flex items-center justify-center rounded-md pt-4 pb-4 gap-x-5 text-base desktop:hidden`}
+          style={{
+            boxShadow: !dark
+              ? "0px 35px 50px -15px rgba(0, 0, 0, 0.5)"
+              : "0px 35px 50px -15px rgba(194, 195, 214, 0.5)",
+          }}
         >
           <p
             onClick={() => setFilter("All")}
-            className={` font-bold cursor-pointer ${
-              filter === "All" ? "text-allColor" : "text-lightPlaceColor"
-            }`}
+            className={`${
+              filter === "All" && dark
+                ? "text-allColor"
+                : filter === "All" && !dark
+                ? "text-allColor"
+                : filter !== "All" && dark
+                ? "text-lightPlaceColor hover:text-[#494C6B] "
+                : "text-justColor hover:text-[#E3E4F1]"
+            } font-bold cursor-pointer transition-all duration-300`}
           >
             All
           </p>
           <p
             onClick={() => setFilter("Active")}
-            className={` font-bold cursor-pointer ${
-              filter === "Active" ? "text-allColor" : "text-lightPlaceColor"
-            }`}
+            className={`${
+              filter === "Active" && dark
+                ? "text-allColor"
+                : filter === "Active" && !dark
+                ? "text-allColor"
+                : filter !== "Active" && dark
+                ? "text-lightPlaceColor hover:text-[#494C6B]"
+                : "text-justColor hover:text-[#E3E4F1]"
+            } font-bold cursor-pointer transition-all duration-300`}
           >
             Active
           </p>
           <p
             onClick={() => setFilter("Completed")}
-            className={` font-bold cursor-pointer ${
-              filter === "Completed" ? "text-allColor" : "text-lightPlaceColor"
-            }`}
+            className={`${
+              filter === "Completed" && dark
+                ? "text-allColor"
+                : filter === "Completed" && !dark
+                ? "text-allColor"
+                : filter !== "Completed" && dark
+                ? "text-lightPlaceColor hover:text-[#494C6B]"
+                : "text-justColor hover:text-[#E3E4F1]"
+            } font-bold cursor-pointer transition-all duration-300`}
           >
             Completed
           </p>
         </div>
+        <DesktopDiv
+          filter={filter}
+          completedTodos={completedTodos}
+          dark={dark}
+          clearCompletedTodos={clearCompletedTodos}
+          setFilter={setFilter}
+          activeTodos={activeTodos}
+        />
         <div className=" flex align-center justify-center">
-          <p className=" mt-10 text-lightPlaceColor ">
+          <p
+            className={` mt-10 ${
+              dark ? " text-lightPlaceColor" : "text-[#5B5E7E]"
+            }`}
+          >
             Drag and drop to reorder list
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

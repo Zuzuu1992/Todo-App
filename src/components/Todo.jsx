@@ -2,7 +2,7 @@ import React from "react";
 import Check from "../assets/images/icon-check.svg";
 import Cross from "../assets/images/icon-cross.svg";
 
-export default function Todo({ task, toggleTodo, deleteTodo }) {
+export default function Todo({ task, toggleTodo, deleteTodo, dark }) {
   const handleTodoClick = () => {
     toggleTodo(task.id);
   };
@@ -13,7 +13,16 @@ export default function Todo({ task, toggleTodo, deleteTodo }) {
 
   return (
     <>
-      <div className="flex items-center justify-between bg-white gap-x-3 pt-4 pb-4 pl-5 pr-5 relative">
+      <hr
+        className={`${
+          dark ? "border-[#E3E4F1]" : "border-[#393A4B]"
+        } xs:hidden desktop:block`}
+      />
+      <div
+        className={` ${
+          dark ? "bg-white" : "bg-darkBoxColor"
+        } flex items-center justify-between gap-x-3 pt-4 pb-4 pl-5 pr-5 relative cursor-pointer`}
+      >
         <div className="flex items-center gap-x-3">
           <label
             className={`checkbox-container relative ${
@@ -24,7 +33,11 @@ export default function Todo({ task, toggleTodo, deleteTodo }) {
               type="checkbox"
               checked={task.complete}
               onChange={handleTodoClick}
-              className={`form-checkbox h-5 w-5 appearance-none rounded-full border border-solid lightBordColor ${
+              className={` ${
+                dark
+                  ? " border border-solid border-lightBordColor"
+                  : " border border-solid border-lightTypeColor"
+              } form-checkbox h-5 w-5 appearance-none rounded-full border border-solid cursor-pointer transition-all duration-300 hover:border-purple-500 ${
                 task.complete
                   ? "bg-gradient-to-tr from-cyan-400 to-purple-600"
                   : ""
@@ -39,8 +52,18 @@ export default function Todo({ task, toggleTodo, deleteTodo }) {
             )}
           </label>
           <p
-            className={`text-md ${task.complete ? "line-through" : ""} ${
-              task.complete ? "text-lightPlaceColor" : "text-lightTextColor"
+            className={`text-md desktop:text-lg flex-1 break-all ${
+              task.complete ? "line-through" : ""
+            } ${
+              task.complete && dark
+                ? "text-[#D1D2DA]"
+                : task.complete && !dark
+                ? "text-[#4D5067]"
+                : !task.complete && dark
+                ? "text-[#494C6B]"
+                : !task.complete && !dark
+                ? "text-[#C8CBE7]"
+                : ""
             }`}
           >
             {task.task}
@@ -48,14 +71,18 @@ export default function Todo({ task, toggleTodo, deleteTodo }) {
         </div>
         <img
           src={Cross}
-          className={`w-4 h-4 cursor-pointer ${
+          className={`w-4 h-4 cursor-pointer ml-4 ${
             task.complete ? "invisible" : ""
           }`}
           alt="Cross Icon"
           onClick={handleCrossClick}
         />
       </div>
-      <hr />
+      <hr
+        className={`${
+          dark ? "border-[#E3E4F1]" : "border-[#393A4B]"
+        } desktop:hidden`}
+      />
     </>
   );
 }

@@ -1,9 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: "class",
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      // backgroundImage: {
+      //   mobileBackDay: "../src/assets/images/bg-mobile-light.jpg",
+      //   mobileBackNight: "./assets/images/bg-mobile-dark.jpg",
+      //   desktopBackDay: "./assets/images/bg-desktop-light.jpg",
+      //   desktopBackNight: "./assets/images/bg-desktop-dark.jpg",
+      // },
       fontFamily: {
         mainFont: "Josefin Sans",
       },
@@ -18,6 +23,12 @@ export default {
         darkPlaceColor: "#767992",
         darkBordColor: "#393A4B",
         shadowColor: "#C2C3D6",
+        justColor: "#5B5E7E",
+      },
+      screens: {
+        xs: "1px",
+        mobile: "375px",
+        desktop: "1440px",
       },
     },
   },
