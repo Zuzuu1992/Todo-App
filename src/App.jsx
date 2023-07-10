@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Check2 from "../src/assets/images/icon-check.svg";
 import Moon from "./assets/images/icon-moon.svg";
 import Sun from "./assets/images/icon-sun.svg";
 import TodoIcon from "./assets/images/TODO.svg";
@@ -11,9 +12,10 @@ function App() {
   const [inputValue, setInputValue] = useState("");
   const [todos, setToDos] = useState([]);
   const [filter, setFilter] = useState("All");
-  const completedTodos = todos.filter((todo) => todo.complete);
-  const activeTodos = todos.filter((todo) => !todo.complete);
+  const completedTodos = todos.filter((todo) => !todo.active);
+  const activeTodos = todos.filter((todo) => todo.active);
   const [dark, setDark] = useState(false);
+  const [done, setDone] = useState(true);
   const filterArr =
     filter === "All"
       ? todos
@@ -31,13 +33,17 @@ function App() {
     setInputValue("");
   };
 
+  const handleDone = () => {
+    setDone(!done);
+  };
+
   const addTodo = async (todo) => {
     try {
       const response = await axios.post(
         "https://todo-app-backend-yqqa.onrender.com/api/todo",
         {
           task: todo,
-          active: true,
+          active: done,
         }
       );
       setToDos([...todos, response.data]);
@@ -45,6 +51,8 @@ function App() {
       console.error(error);
     }
   };
+
+  let x = todos;
 
   useEffect(() => {
     const getAllTodos = async () => {
@@ -67,7 +75,7 @@ function App() {
         if (todo.id === id) {
           return {
             ...todo,
-            complete: !todo.complete,
+            active: !todo.active,
           };
         }
         return todo;
@@ -103,6 +111,8 @@ function App() {
         "https://todo-app-backend-yqqa.onrender.com/api/todo"
       );
       setToDos(response.data);
+      setDone(true);
+      setInputValue("");
     } catch (error) {
       console.error(error);
     }
@@ -143,19 +153,31 @@ function App() {
         >
           <input
             type="checkbox"
+            checked={!done}
+            onChange={handleDone}
             className={`${
               dark
                 ? " border border-solid border-lightBordColor"
                 : " border border-solid border-lightTypeColor"
-            } appearance-none w-5 h-5 rounded-full cursor-pointer hover:border-allColor`}
+            } appearance-none w-5 h-5 rounded-full cursor-pointer hover:border-allColor relative ${
+              !done ? "bg-gradient-to-tr from-cyan-400 to-purple-600" : ""
+            }`}
           />
-
+          {!done && (
+            <img
+              src={Check2}
+              className="absolute transform translate-x-[40%] translate-y-[-5%]"
+              alt="Check Icon"
+            />
+          )}
           <input
             className={`${
               dark
                 ? "bg-white placeholder-lightPlaceColor text-lightTypeColor "
                 : "bg-darkBoxColor placeholder-[#767992] text-[#C8CBE7]"
-            } outline-none text-md w-full pr-5 tracking-tighter leading-3 caret-allColor desktop:text-lg `}
+            } outline-none text-md w-full pr-5 tracking-tighter leading-3 caret-allColor desktop:text-lg ${
+              !done && inputValue ? "line-through" : ""
+            }`}
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
