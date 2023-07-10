@@ -16,7 +16,7 @@ export function DesktopDiv({
     <div
       className={` ${
         dark ? "bg-white" : "bg-darkBoxColor"
-      } items-center justify-between rounded-md gap-x-3  pt-5 pb-5 pl-5  pr-5 xs:hidden desktop:block desktop:flex`}
+      } items-center justify-between rounded-md gap-x-3  pt-5 pb-5 pl-5  pr-5 xs:hidden  desktop:flex`}
       style={{
         boxShadow: !dark
           ? "0px 35px 50px -15px rgba(0, 0, 0, 0.5)"
