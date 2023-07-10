@@ -5,12 +5,12 @@ import TodoIcon from "./assets/images/TODO.svg";
 import Todo from "/src/components/Todo.jsx";
 import { DesktopDiv } from "./components/DesktopDiv";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 function App() {
   const [inputValue, setInputValue] = useState("");
   const [todos, setToDos] = useState([]);
   const [filter, setFilter] = useState("All");
-  const [theme, setTheme] = useState();
   const completedTodos = todos.filter((todo) => todo.complete);
   const activeTodos = todos.filter((todo) => !todo.complete);
   const [dark, setDark] = useState(false);
@@ -31,27 +31,81 @@ function App() {
     setInputValue("");
   };
 
-  const addTodo = (todo) => {
-    const newTodo = { id: uuidv4(), task: todo, complete: false };
-    setToDos([...todos, newTodo]);
-    console.log([...todos, newTodo]);
+  const addTodo = async (todo) => {
+    try {
+      const response = await axios.post(
+        "https://todo-app-backend-yqqa.onrender.com/api/todo",
+        {
+          task: todo,
+          active: true,
+        }
+      );
+      setToDos([...todos, response.data]);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const toggleTodo = (id) => {
-    const newTodoes = [...todos];
-    const todo = newTodoes.find((todo) => todo.id === id);
-    todo.complete = !todo.complete;
-    setToDos(newTodoes);
+  useEffect(() => {
+    const getAllTodos = async () => {
+      try {
+        const response = await axios.get(
+          "https://todo-app-backend-yqqa.onrender.com/api/todo"
+        );
+        setToDos(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getAllTodos();
+  }, []);
+
+  const toggleTodo = async (id) => {
+    try {
+      const updatedTodos = todos.map((todo) => {
+        if (todo.id === id) {
+          return {
+            ...todo,
+            complete: !todo.complete,
+          };
+        }
+        return todo;
+      });
+
+      await axios.put(
+        `https://todo-app-backend-yqqa.onrender.com/api/todo/${id}`
+      );
+
+      setToDos(updatedTodos);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const deleteTodo = (id) => {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
-    setToDos(updatedTodos);
+  const deleteTodo = async (id) => {
+    try {
+      const response = await axios.delete(
+        `https://todo-app-backend-yqqa.onrender.com/api/todo/${id}`
+      );
+      setToDos(todos.filter((todo) => todo.id !== id));
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  const clearCompletedTodos = () => {
-    const updatedTodos = todos.filter((todo) => !todo.complete);
-    setToDos(updatedTodos);
+  const clearCompletedTodos = async () => {
+    try {
+      await axios.delete(
+        `https://todo-app-backend-yqqa.onrender.com/api/deletecompleted`
+      );
+      const response = await axios.get(
+        "https://todo-app-backend-yqqa.onrender.com/api/todo"
+      );
+      setToDos(response.data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
